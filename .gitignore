@@ -1,0 +1,7 @@
+.idea
+*.log
+*.pyc
+workspace.xml
+management_app/__pycache__/*
+AdminManagement/__pycache__/*
+__pycache__/*
