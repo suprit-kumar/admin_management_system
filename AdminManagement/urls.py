@@ -16,6 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from management_app import views
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
+    path('', views.loginHtml, name='loginHtml'),
+    path('login_operation/', views.login_operation, name='login_operation'),
+    path('logout/', views.logout, name='logout'),
+    path('superadmin_dashboard/', views.superadmin_dashboard, name='superadmin_dashboard'),
+    path('kycadmin_dashboard/', views.kycadmin_dashboard, name='kycadmin_dashboard'),
+    path('agent_dashboard/', views.agent_dashboard, name='agent_dashboard'),
 ]
