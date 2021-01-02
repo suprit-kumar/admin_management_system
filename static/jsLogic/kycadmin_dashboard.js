@@ -56,7 +56,7 @@ function saveAgentDetails() {
                 } else if (response.result === 'updated') {
                     // fetchAgentsUnderAdmin();
                     swal(response.msg);
-                } else if (response.result === 'email_already_exits') {
+                } else if (response.result === 'email_already_exists') {
                     swal(response.msg);
                 } else if (response.result === 'failed') {
                     swal(response.msg);

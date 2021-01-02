@@ -135,7 +135,7 @@ def save_admin_details(request):
                                 models.KycAdmin.objects.filter(agent_usercode=unique_usercode).delete()
                                 return JsonResponse({'result': 'failed', 'msg': 'Failed to save details! Try again'})
                     elif chek_email_exist is True:
-                        return JsonResponse({'result': 'email_already_exits',
+                        return JsonResponse({'result': 'email_already_exists',
                                              'msg': 'We have already an account with this email id! Try another email id'})
                 else:
                     models.KycAdmin.objects.filter(kycadmin_usercode=adminHiddenUniqueCode).update(
@@ -192,7 +192,7 @@ def save_agent_details_by_superadmin(request):
                                 models.Agent.objects.filter(agent_usercode=unique_usercode).delete()
                                 return JsonResponse({'result': 'failed', 'msg': 'Failed to save details! Try again'})
                     elif chek_email_exist is True:
-                        return JsonResponse({'result': 'email_already_exits',
+                        return JsonResponse({'result': 'email_already_exists',
                                              'msg': 'We have already an account with this email id! Try another email id'})
                 else:
                     models.Agent.objects.filter(agent_usercode=agentHiddenUniqueCode).update(
@@ -250,7 +250,7 @@ def save_agent_details_by_kycadmin(request):
                                 models.Agent.objects.filter(agent_usercode=unique_usercode).delete()
                                 return JsonResponse({'result': 'failed', 'msg': 'Failed to save details! Try again'})
                     elif chek_email_exist is True:
-                        return JsonResponse({'result': 'email_already_exits',
+                        return JsonResponse({'result': 'email_already_exists',
                                              'msg': 'We have already an account with this email id! Try another email id'})
                 else:
                     models.Agent.objects.filter(agent_usercode=agentHiddenUniqueCode).update(
