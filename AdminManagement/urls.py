@@ -26,4 +26,6 @@ urlpatterns = [
     path('superadmin_dashboard/', views.superadmin_dashboard, name='superadmin_dashboard'),
     path('kycadmin_dashboard/', views.kycadmin_dashboard, name='kycadmin_dashboard'),
     path('agent_dashboard/', views.agent_dashboard, name='agent_dashboard'),
+    path('admin/save_agent_details_by_kycadmin/', views.save_agent_details_by_kycadmin, name='save_agent_details_by_kycadmin'),
+    path('admin/fetch_all_agents_under_admin/', views.fetch_all_agents_under_admin, name='fetch_all_agents_under_admin'),
 ]

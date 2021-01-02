@@ -10143,7 +10143,7 @@ a.bg-dark:focus, a.bg-dark:hover, button.bg-dark:focus, button.bg-dark:hover {
 }
 
 .text-center {
-    text-align: center !important
+    /*text-align: center !important*/
 }
 
 @media (min-width: 576px) {

@@ -19,6 +19,7 @@ class Role(models.Model):
 class KycAdmin(models.Model):
     admin_id = models.AutoField(primary_key=True)
     kycadmin_name = models.CharField(max_length=100, null=True, default="")
+    kycadmin_usercode = models.CharField(max_length=100, null=True, default="")
     kycadmin_email = models.CharField(max_length=100, null=True, default="")
     kycadmin_mobile = models.IntegerField(default=0)
     kycadmin_address = models.CharField(max_length=250, null=True, default="")
@@ -35,6 +36,7 @@ class KycAdmin(models.Model):
 class Agent(models.Model):
     agent_id = models.AutoField(primary_key=True)
     agent_name = models.CharField(max_length=100, null=True, default="")
+    agent_usercode = models.CharField(max_length=100, null=True, default="")
     agent_email = models.CharField(max_length=100, null=True, default="")
     agent_mobile = models.IntegerField(default=0)
     agent_address = models.CharField(max_length=250, null=True, default="")

@@ -1,0 +1,154 @@
+html, body {
+    height: 100%;
+    font-family: "Open Sans", sans-serif;
+    font-size: 15px;
+}
+
+a, th {
+    color: white;
+}
+
+.form-label {
+    float: left;
+}
+
+.form-group {
+    margin-bottom: 0.5rem;
+}
+
+th, td {
+    text-align: center;
+    font-size: 13px;
+}
+
+.form-control {
+    height: calc(1.2em + 0.75rem + 10px);
+    font-weight: 100;
+}
+
+.card-title {
+    color: white;
+}
+
+.card-data {
+    float: right;
+    padding: 2px;
+    font-size: 24px;
+    color: white;
+}
+
+.card-icon {
+    font-size: 32px;
+    /*color: #2962ff;*/
+    color: white;
+}
+
+.btn {
+    background-color: #2962ff;
+    color: white;
+}
+
+.table-name-btn {
+    background-color: #ffffff;
+    color: black;
+    cursor: none;
+!important;
+    font-weight: bold;
+}
+
+.mail-noti-icon {
+    color: white;
+    margin-top: 9px;
+    font-size: 14px;
+}
+
+.btn-status-active {
+    color: #fff;
+    background-color: #fb3 !important;
+}
+
+.btn-status-deactive {
+    color: #fff;
+    background-color: #00c851 !important;
+}
+
+/*Clock Css*/
+.clockdate-wrapper {
+    background-color: #2962ff;
+    padding: 3px;
+    max-width: 348px;
+    width: 100%;
+    text-align: center;
+    border-radius: 5px;
+    margin: 0 auto;
+    margin-top: 1%;
+}
+
+#clock {
+    background-color: #2962ff;
+    font-family: sans-serif;
+    font-size: 12px;
+    text-shadow: 0 0 1px #fff;
+    color: #fff;
+}
+
+#date {
+    font-size: 13px;
+    font-family: arial, sans-serif;
+    color: #fff;
+}
+
+/* Center the avatar image inside this container */
+.imgcontainer {
+    float: left;
+    margin: 0 0 12px 0;
+}
+
+/* Avatar image */
+img.avatar {
+    margin-left: 45%;
+    width: 44%;
+    border-radius: 5%;
+}
+
+#smalImgage {
+    width: 36px;
+    border-radius: 50%;
+}
+
+.csv-upload-btn {
+    margin-left: 10px;
+    height: 32px;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.cv-spinner {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px #ddd solid;
+    border-top: 4px #2e93e6 solid;
+    border-radius: 50%;
+    animation: sp-anime 0.8s infinite linear;
+}
+
+.star {
+    color: red;
+    margin-left: 7px;
+}
+
