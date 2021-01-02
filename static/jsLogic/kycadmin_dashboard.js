@@ -18,7 +18,7 @@ function saveAgentDetails() {
     if (agentEmail === '') {
         swal("Enter Emailid");
         return false;
-    } else if (!(emailadd.test(clientEmail))) {
+    } else if (!(emailadd.test(agentEmail))) {
         swal("Enter Valid Email Id");
         return false;
     } else if (!agentName) {
@@ -53,8 +53,7 @@ function saveAgentDetails() {
                 if (response.result === 'created') {
                     // fetchAgentsUnderAdmin();
                     swal(response.msg);
-                }
-                if (response.result === 'updated') {
+                } else if (response.result === 'updated') {
                     // fetchAgentsUnderAdmin();
                     swal(response.msg);
                 } else if (response.result === 'email_already_exits') {
@@ -63,7 +62,7 @@ function saveAgentDetails() {
                     swal(response.msg);
                 }
             }, error: function (error) {
-                console.log('Error in createUpdateclientDetails function ->', error);
+                console.log('Error in saveAgentDetails function ->', error);
             }
         })
     }
