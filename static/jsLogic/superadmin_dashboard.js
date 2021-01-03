@@ -1,6 +1,13 @@
 $(document).ready(function () {
+
+    fetchAllAdminForSuperadmin();
+    fetchAllAgentsForSuperadmin();
     $('#save_admin_details_btn').click(function () {
         saveAdminDetails();
+    });
+
+    $("#superadmin_save_agent_details").click(function () {
+        saveAgentDetailsBySuperadmin();
     });
 
     $('#addNewAdminModal').on('hidden.bs.modal', function (e) {
@@ -58,9 +65,13 @@ function saveAdminDetails() {
             data: details,
             success: function (response) {
                 if (response.result === 'created') {
+                    fetchAllAdminForSuperadmin();
                     swal(response.msg);
+                    reload();
                 } else if (response.result === 'updated') {
+                    fetchAllAdminForSuperadmin();
                     swal(response.msg);
+                    reload();
                 } else if (response.result === 'email_already_exists') {
                     swal(response.msg);
                 } else if (response.result === 'failed') {
@@ -74,41 +85,29 @@ function saveAdminDetails() {
 }
 
 
-function fetchAllAdminsAndAgentsForSuperadmin() {
+function fetchAllAdminForSuperadmin() {
     $.ajax({
         type: 'POST',
-        url: '/fetch_all_agents_and_admins_for_superadmin/',
+        url: '/superadmin/fetch_all_admins_under_for_superadmin/',
+        async: false,
         success: function (response) {
             if (response.result === 'success') {
                 $('#agent_details_table,#admin_details_table > tbody').empty();
+                $('#select_admin_for_agent').empty();
+                $('#select_admin_for_agent').prepend("<option value=''>Select Admin For Agent</option>");
                 response.all_admins.forEach(function (admin) {
                     let adminTableDetails = "<tr>" +
-                        // "<td><div class='form-check'><input type='checkbox' class='form-check-input select_checkbox' name='select_checkbox' id='" + agent.client_id + "'></div></td>" +
                         "<td>" + admin.kycadmin_name + "</td>" +
                         "<td>" + admin.kycadmin_email + "</td>" +
                         "<td>" + admin.kycadmin_mobile + "</td>" +
                         "<td>" + admin.kycadmin_state + "</td>" +
                         "<td>" + admin.kycadmin_address + "</td>" +
-                        "<td>" + "<button id='" + admin.admin_id + "' class='btn btn-info btn-sm edit-client'>Edit</button><button id='" + admin.admin_id + "' class='btn btn-sm  change-client-status'>Delete</button>" + "</td>";
-
+                        "<td>" + "<button id='" + admin.admin_id + "' class='btn btn-info btn-sm edit-admin-details'>Edit</button><button id='" + admin.admin_id + "' class='btn btn-sm delete-admin-details btn-danger'>Delete</button>" + "</td>";
                     adminTableDetails += "</tr>";
                     $('#admin_details_table > tbody').append(adminTableDetails);
+                    $('#select_admin_for_agent').append("<option value='" + admin.kycadmin_usercode + "'>" + admin.kycadmin_name + "</option>");
                 });
-
-                response.all_agents.forEach(function (agent) {
-                    let agentTableDetails = "<tr>" +
-                        // "<td><div class='form-check'><input type='checkbox' class='form-check-input select_checkbox' name='select_checkbox' id='" + agent.client_id + "'></div></td>" +
-                        "<td>" + agent.agent_name + "</td>" +
-                        "<td>" + agent.agent_email + "</td>" +
-                        "<td>" + agent.agent_mobile + "</td>" +
-                        "<td>" + agent.agent_state + "</td>" +
-                        "<td>" + agent.agent_address + "</td>" +
-                        "<td>" + "<button id='" + agent.agent_id + "' class='btn btn-info btn-sm edit-client'>Edit</button><button id='" + agent.agent_id + "' class='btn btn-sm  change-client-status'>Delete</button>" + "</td>";
-                    agentTableDetails += "</tr>";
-                    $('#agent_details_table > tbody').append(agentTableDetails);
-                });
-
-                $('#agent_details_table,#admin_details_table').DataTable({
+                $('#admin_details_table').DataTable({
                     'destroy': true,
                     "ordering": false,
                     'searching': true,
@@ -116,15 +115,158 @@ function fetchAllAdminsAndAgentsForSuperadmin() {
                 });
                 $('.dataTables_length').addClass('bs-select');
 
+                $('.edit-admin-details').click(function () {
+                    const id = $(this).attr('id');
+                    fetchAdminDetailsById(id);
+                    $('#addNewAdminModal').modal('show');
+                });
+
+                $('.delete-admin-details').click(function () {
+                    const id = $(this).attr('id');
+                    deleteAdminDetailsById(id);
+                });
             } else if (response.result === 'failed') {
                 swal(response.msg);
             }
         }, error: function (error) {
-            console.log('Error in fetchAllAdminsAndAgentsForSuperadmin function -->', error);
+            console.log('Error in fetchAllAdminForSuperadmin function -->', error);
         }
     })
 }
 
+
+function deleteAdminDetailsById(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/delete_admin_details_by_id/',
+        data: {'id': id},
+        success: function (response) {
+            if (response.result === 'deleted') {
+                fetchAllAdminForSuperadmin();
+                swal(response.msg);
+            } else if (response.result === 'failed') {
+                fetchAllAdminForSuperadmin();
+                swal(response.msg);
+            }
+        }, error: function (error) {
+            console.log('Error in deleteAdminDetailsById function --->', error);
+        },
+    })
+}
+
+function fetchAllAgentsForSuperadmin() {
+    $.ajax({
+        type: 'POST',
+        url: '/superadmin/fetch_all_agents_under_for_superadmin/',
+        async: false,
+        success: function (response) {
+            if (response.result === 'success') {
+                $('#agent_details_tab > tbody').empty();
+                response.all_agents.forEach(function (agent) {
+                    var agentTableDetails = "<tr>" +
+                        "<td>" + agent.agent_name + "</td>" +
+                        "<td>" + agent.agent_email + "</td>" +
+                        "<td>" + agent.agent_mobile + "</td>" +
+                        "<td>" + agent.agent_state + "</td>" +
+                        "<td>" + agent.agent_address + "</td>" +
+                        "<td>" + "<button id='" + agent.agent_id + "' class='btn btn-info btn-sm edit-agent-details'>Edit</button><button id='" + agent.agent_id + "' class='btn btn-sm btn-danger delete-agent-details'>Delete</button>" + "</td>";
+                    agentTableDetails += "</tr>";
+                    $('#agent_details_tab > tbody').append(agentTableDetails);
+                });
+
+                $('#agent_details_tab').DataTable({
+                    'destroy': true,
+                    "ordering": false,
+                    'searching': true,
+                    'retrieve': true,
+                });
+                $('.dataTables_length').addClass('bs-select');
+
+                $('.edit-agent-details').click(function () {
+                    const id = $(this).attr('id');
+                    fetchAgentDetailsById(id);
+                    $('#addNewAgentBehalf_ofAdminModal').modal('show');
+                });
+
+                $('.delete-agent-details').click(function () {
+                    const id = $(this).attr('id');
+                    deleteAgentDetailsById(id);
+                });
+            } else if (response.result === 'failed') {
+                swal(response.msg);
+            }
+        }, error: function (error) {
+            console.log('Error in fetchAllAdminForSuperadmin function -->', error);
+        }
+    })
+}
+
+function deleteAgentDetailsById(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/delete_agent_details_by_id/',
+        data: {'id': id},
+        success: function (response) {
+            if (response.result === 'deleted') {
+                fetchAllAgentsForSuperadmin();
+                swal(response.msg);
+            } else if (response.result === 'failed') {
+                fetchAllAgentsForSuperadmin();
+                swal(response.msg);
+            }
+        }, error: function (error) {
+            console.log('Error in deleteAdminDetailsById function --->', error);
+        },
+    })
+}
+
+function fetchAdminDetailsById(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/fetch_admin_details_by_id/',
+        data: {'id': id},
+        success: function (response) {
+            if (response.result === 'success') {
+                const details = response.admin_details[0];
+                $('#adminHiddenCode').val(details.kycadmin_usercode);
+                $('#admin_email_input').val(details.kycadmin_email);
+                $('#admin_name_input').val(details.kycadmin_name);
+                $('#admin_mobile_input').val(details.kycadmin_mobile);
+                $('#admin_state_input').val(details.kycadmin_state);
+                $('#admin_address_input').val(details.kycadmin_address);
+            } else if (response.result === 'failed') {
+                swal(response.msg);
+            }
+        }, error: function (error) {
+            console.log("Error in fetchAdminDetailsById function --->", error);
+        }
+    })
+}
+
+function fetchAgentDetailsById(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/fetch_agent_details_by_id/',
+        data: {'id': id},
+        success: function (response) {
+            if (response.result === 'success') {
+                const details = response.agent_details[0];
+                $('#agentHiddenCode').val(details.agent_usercode);
+                $('#select_admin_for_agent').val(details.admin_id__kycadmin_usercode).trigger('change');
+                $('#agent_email_input').val(details.agent_email);
+                $('#agent_name_input').val(details.agent_name);
+                $('#agent_mobile_input').val(details.agent_mobile);
+                $('#agent_state_input').val(details.agent_state);
+                $('#agent_address_input').val(details.agent_address);
+
+            } else if (response.result === 'failed') {
+                swal(response.msg);
+            }
+        }, error: function (error) {
+            console.log("Error in fetchAdminDetailsById function --->", error);
+        }
+    })
+}
 
 function saveAgentDetailsBySuperadmin() {
     const agentHiddenUniqueCode = $('#agentHiddenCode').val();
@@ -173,11 +315,13 @@ function saveAgentDetailsBySuperadmin() {
             data: details,
             success: function (response) {
                 if (response.result === 'created') {
-                    // fetchAgentsUnderAdmin();
+                    fetchAllAgentsForSuperadmin();
                     swal(response.msg);
+                    reload();
                 } else if (response.result === 'updated') {
-                    // fetchAgentsUnderAdmin();
+                    fetchAllAgentsForSuperadmin();
                     swal(response.msg);
+                    reload();
                 } else if (response.result === 'email_already_exists') {
                     swal(response.msg);
                 } else if (response.result === 'failed') {
@@ -189,7 +333,6 @@ function saveAgentDetailsBySuperadmin() {
         })
     }
 }
-
 
 function keyValidate() {
     var e = event || window.event;  // get event object
@@ -203,4 +346,10 @@ function keyValidate() {
             e.returnValue = false; //IE
         }
     }
+}
+
+function reload() {
+    setTimeout((function () {
+        window.location.reload();
+    }), 2000);
 }

@@ -22,7 +22,7 @@ th, td {
 }
 
 .form-control {
-    height: calc(1.2em + 0.75rem + 10px);
+    height: calc(1.2em + 0.75rem + 4px) !important;
     font-weight: 100;
 }
 

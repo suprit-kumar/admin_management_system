@@ -97,7 +97,8 @@
                             <input type="hidden" id="agentHiddenCode" value="">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="select_admin_for_agent" class="form-label">Select Admin For Agent</label>
+                                    <label for="select_admin_for_agent" class="form-label">Select Admin For
+                                        Agent</label>
                                     <span class="mandatory star">*</span>
                                     <select id="select_admin_for_agent" class="form-control">
                                         <option value="">Select Admin For Agent</option>
@@ -156,53 +157,16 @@
         </div>
     </div>
 
-
-    <div class="container-fluid mt-4">
-        <div class="row">
-            <div class="col-lg-4 col-md-12 mb-4">
-
-                <div class="card warm-flame-gradient">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Admin</h5>
-                        <span><i class="fas fa-users card-icon"></i></span>
-                        <span class="card-data" id="t_admin">0</span>
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-lg-4 col-md-12 mb-4">
-
-                <div class="card dusty-grass-gradient">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Client</h5>
-                        <span><i class="fas fa-users card-icon"></i></span>
-                        <span class="card-data" id="t_client">0</span>
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-lg-4 col-md-12 mb-4">
-
-                <div class="card blue-gradient">
-                    <div class="card-body">
-                        <h5 class="card-title">Total User</h5>
-                        <span><i class="fas fa-users card-icon"></i></span>
-                        <span class="card-data" id="t_user">0</span>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
     <div class="container-fluid">
-        <div class="table-conatiner mt-4 ml-2 mr-2">
+        <div class="table-conatiner mt-4 ml-2 mr-2"
+             style="background: ghostwhite;border: 1px solid black;padding: 10px">
             <div class="wrapper-editor mt-2">
                 <div class="text-center">
 
                 </div>
             </div>
-            <h4 class="btn  btn-rounded btn-sm text-center table-name-btn" style="float: left">Admin List</h4>
+            <h4 class="btn  btn-rounded btn-sm btn-black text-center table-name-btn" style="float: left;color: white">
+                Admin List</h4>
             <a href="javascript:void(0)" class="btn  btn-rounded btn-sm" data-toggle="modal" style="float: right"
                data-target="#addNewAdminModal">Add New Admin<i
                     class="fas fa-plus-square ml-1"></i></a>
@@ -227,17 +191,19 @@
     </div>
 
     <div class="container-fluid">
-        <div class="table-conatiner mt-4 ml-2 mr-2">
+        <div class="table-conatiner mt-4 ml-2 mr-2"
+             style="background: aliceblue;border: 1px solid black;padding: 10px;">
             <div class="wrapper-editor mt-2">
                 <div class="text-center">
 
                 </div>
             </div>
-            <h4 class="btn  btn-rounded btn-sm text-center table-name-btn" style="float: left">Agent List</h4>
+            <h4 class="btn  btn-rounded btn-sm btn-black text-center table-name-btn" style="float: left;color: white">
+                Agent List</h4>
             <a href="javascript:void(0)" class="btn  btn-rounded btn-sm" data-toggle="modal" style="float: right"
                data-target="#addNewAgentBehalf_ofAdminModal">Add New Agent<i
                     class="fas fa-plus-square ml-1"></i></a>
-            <table id="agent_details_table" class="table table-striped table-bordered table-sm mt-2" cellspacing="0"
+            <table id="agent_details_tab" class="table table-striped table-bordered table-sm mt-2" cellspacing="0"
                    width="100%">
                 <thead class="#2962ff blue accent-4">
                 <tr>
@@ -256,7 +222,6 @@
             <!-- Table End -->
         </div>
     </div>
-
 {% endblock %}
 
 {% block fscripts %}

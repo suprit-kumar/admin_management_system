@@ -21,7 +21,7 @@ class KycAdmin(models.Model):
     kycadmin_name = models.CharField(max_length=100, null=True, default="")
     kycadmin_usercode = models.CharField(max_length=100, null=True, default="")
     kycadmin_email = models.CharField(max_length=100, null=True, default="")
-    kycadmin_mobile = models.IntegerField(default=0)
+    kycadmin_mobile = models.CharField(default='', null=True, max_length=10)
     kycadmin_address = models.CharField(max_length=250, null=True, default="")
     kycadmin_state = models.CharField(max_length=50, null=True, default="")
     kycadmin_status = models.CharField(max_length=50, null=True, default="active")
@@ -33,12 +33,13 @@ class KycAdmin(models.Model):
     def __unicode__(self):
         return u'%s' % [self.admin_id]
 
+
 class Agent(models.Model):
     agent_id = models.AutoField(primary_key=True)
     agent_name = models.CharField(max_length=100, null=True, default="")
     agent_usercode = models.CharField(max_length=100, null=True, default="")
     agent_email = models.CharField(max_length=100, null=True, default="")
-    agent_mobile = models.IntegerField(default=0)
+    agent_mobile = models.CharField(default='', null=True, max_length=10)
     agent_address = models.CharField(max_length=250, null=True, default="")
     agent_state = models.CharField(max_length=50, null=True, default="")
     admin_id = models.ForeignKey(KycAdmin, on_delete=models.CASCADE)
@@ -50,6 +51,7 @@ class Agent(models.Model):
 
     def __unicode__(self):
         return u'%s' % [self.agent_id]
+
 
 class AuthUsers(models.Model):
     u_id = models.AutoField(primary_key=True)

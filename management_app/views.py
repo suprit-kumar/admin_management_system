@@ -54,7 +54,6 @@ def logout(request):
 
 
 def superadmin_dashboard(request):
-    print('request-->', request)
     try:
         if 'usercode' in request.session:
             user_code = request.session['usercode']
@@ -110,7 +109,7 @@ def save_admin_details(request):
                 adminAddress = request.POST['adminAddress']
 
                 if adminHiddenUniqueCode == '':
-                    chek_email_exist = models.AuthUsers.objects.filter(username=adminEmail).exists()
+                    chek_email_exist = models.AuthUsers.objects.filter(useremail=adminEmail).exists()
                     if chek_email_exist is False:
                         unique_usercode = getUniqueUserCode()
                         create_admin = models.KycAdmin.objects.create(kycadmin_usercode=unique_usercode,
@@ -126,23 +125,25 @@ def save_admin_details(request):
                                 models.AuthUsers.objects.create(user_code=unique_usercode, name=adminName,
                                                                 password=encrypt_password(pwd),
                                                                 role_id=models.Role.objects.get(role_code='KYCADMIN'),
-                                                                user_email=adminEmail,
+                                                                useremail=adminEmail,
                                                                 )
-                                return JsonResponse({'result': 'created',
-                                                     'msg': 'New Admin Added Successfully\nPassword has been sent to the respective email id to access the account'})
+                                send_login_credentials = send_login_credentials_in_email(adminEmail, pwd)
+                                if send_login_credentials is not None:
+                                    return JsonResponse({'result': 'created',
+                                                         'msg': 'New Admin Added Successfully\nPassword has been sent to the respective email id to access the account'})
                             except Exception as e:
                                 print('Exception in new admin creation -->', e)
-                                models.KycAdmin.objects.filter(agent_usercode=unique_usercode).delete()
+                                models.KycAdmin.objects.filter(kycadmin_usercode=unique_usercode).delete()
                                 return JsonResponse({'result': 'failed', 'msg': 'Failed to save details! Try again'})
                     elif chek_email_exist is True:
                         return JsonResponse({'result': 'email_already_exists',
                                              'msg': 'We have already an account with this email id! Try another email id'})
                 else:
                     models.KycAdmin.objects.filter(kycadmin_usercode=adminHiddenUniqueCode).update(
-                        agent_name=adminName,
-                        agent_mobile=adminMobile,
-                        agent_address=adminAddress,
-                        agent_state=adminState,
+                        kycadmin_name=adminName,
+                        kycadmin_mobile=adminMobile,
+                        kycadmin_address=adminAddress,
+                        kycadmin_state=adminState,
                     )
                     return JsonResponse({'result': 'updated', 'msg': 'Details updated successfully'})
     except Exception as e:
@@ -164,7 +165,7 @@ def save_agent_details_by_superadmin(request):
                 agentAddress = request.POST['agentAddress']
 
                 if agentHiddenUniqueCode == '':
-                    chek_email_exist = models.AuthUsers.objects.filter(username=agentEmail).exists()
+                    chek_email_exist = models.AuthUsers.objects.filter(useremail=agentEmail).exists()
                     if chek_email_exist is False:
                         unique_usercode = getUniqueUserCode()
                         kycadmin_id = models.KycAdmin.objects.get(kycadmin_usercode=selectAdminForAgent)
@@ -183,10 +184,12 @@ def save_agent_details_by_superadmin(request):
                                 models.AuthUsers.objects.create(user_code=unique_usercode, name=agentName,
                                                                 password=encrypt_password(pwd),
                                                                 role_id=models.Role.objects.get(role_code='AGENT'),
-                                                                user_email=agentEmail,
+                                                                useremail=agentEmail,
                                                                 )
-                                return JsonResponse({'result': 'created',
-                                                     'msg': 'New Agent Added Successfully\nPassword has been sent to the respective email id to access the account'})
+                                send_login_credentials = send_login_credentials_in_email(agentEmail, pwd)
+                                if send_login_credentials is not None:
+                                    return JsonResponse({'result': 'created',
+                                                         'msg': 'New Agent Added Successfully\nPassword has been sent to the respective email id to access the account'})
                             except Exception as e:
                                 print('Exception in new admin creation -->', e)
                                 models.Agent.objects.filter(agent_usercode=unique_usercode).delete()
@@ -222,7 +225,7 @@ def save_agent_details_by_kycadmin(request):
                 agentAddress = request.POST['agentAddress']
 
                 if agentHiddenUniqueCode == '':
-                    chek_email_exist = models.AuthUsers.objects.filter(username=agentEmail).exists()
+                    chek_email_exist = models.AuthUsers.objects.filter(useremail=agentEmail).exists()
                     if chek_email_exist is False:
                         unique_usercode = getUniqueUserCode()
                         kycadmin_id = models.KycAdmin.objects.get(kycadmin_usercode=usercode)
@@ -241,10 +244,12 @@ def save_agent_details_by_kycadmin(request):
                                 models.AuthUsers.objects.create(user_code=unique_usercode, name=agentName,
                                                                 password=encrypt_password(pwd),
                                                                 role_id=models.Role.objects.get(role_code='AGENT'),
-                                                                user_email=agentEmail,
+                                                                useremail=agentEmail,
                                                                 )
-                                return JsonResponse({'result': 'created',
-                                                     'msg': 'New Agent Added Successfully\nPassword has been sent to the respective email id to access the account'})
+                                send_login_credentials = send_login_credentials_in_email(agentEmail, pwd)
+                                if send_login_credentials is not None:
+                                    return JsonResponse({'result': 'created',
+                                                         'msg': 'New Agent Added Successfully\nPassword has been sent to the respective email id to access the account'})
                             except Exception as e:
                                 print('Exception in new admin creation -->', e)
                                 models.Agent.objects.filter(agent_usercode=unique_usercode).delete()
@@ -286,7 +291,23 @@ def fetch_all_agents_under_admin(request):
 
 
 @csrf_exempt
-def fetch_all_agents_and_admins_under_for_superadmin(request):
+def fetch_all_admins_under_for_superadmin(request):
+    try:
+        if 'usercode' in request.session:
+            if request.method == 'POST':
+                all_admins = list(
+                    models.KycAdmin.objects.all().values('admin_id', 'kycadmin_name', 'kycadmin_usercode',
+                                                         'kycadmin_email',
+                                                         'kycadmin_mobile', 'kycadmin_address', 'kycadmin_state').
+                        order_by('-created_time'))
+                return JsonResponse({'result': 'success', 'all_admins': all_admins})
+    except Exception as e:
+        print('Exception in fetch_all_agents_under_admin  /management_app/views.py  -->', e)
+        return JsonResponse({"result": "failed", 'msg': 'Failed to load agents! Refresh the Page'})
+
+
+@csrf_exempt
+def fetch_all_agents_under_for_superadmin(request):
     try:
         if 'usercode' in request.session:
             if request.method == 'POST':
@@ -294,13 +315,85 @@ def fetch_all_agents_and_admins_under_for_superadmin(request):
                     models.Agent.objects.all().values('agent_id', 'agent_name', 'agent_email', 'agent_mobile',
                                                       'agent_address', 'agent_state').
                         order_by('-created_time'))
-                all_admins = list(
-                    models.KycAdmin.objects.all().values('admin_id', 'kycadmin_name', 'kycadmin_usercode',
-                                                         'kycadmin_email',
-                                                         'kycadmin_mobile', 'kycadmin_address', 'kycadmin_state').
-                        order_by('-created_time'))
-
-                return JsonResponse({'result': 'success', 'all_agents': all_agents, 'all_admins': all_admins})
+                return JsonResponse({'result': 'success', 'all_agents': all_agents})
     except Exception as e:
         print('Exception in fetch_all_agents_under_admin  /management_app/views.py  -->', e)
         return JsonResponse({"result": "failed", 'msg': 'Failed to load agents! Refresh the Page'})
+
+
+@csrf_exempt
+def fetch_admin_details_by_id(request):
+    try:
+        if 'usercode' in request.session:
+            if request.method == 'POST':
+                id = request.POST['id']
+                admin_details = list(
+                    models.KycAdmin.objects.values('admin_id', 'kycadmin_name', 'kycadmin_usercode', 'kycadmin_email',
+                                                   'kycadmin_mobile', 'kycadmin_address', 'kycadmin_state').filter(
+                        admin_id=id))
+
+                return JsonResponse({'result': 'success', 'admin_details': admin_details})
+    except Exception as e:
+        print('Exception in fetch_admin_details_by_id  /management_app/views.py  -->', e)
+        return JsonResponse({"result": "failed", 'msg': 'Failed to load admin details! Refresh the Page'})
+
+
+@csrf_exempt
+def fetch_agent_details_by_id(request):
+    try:
+        if 'usercode' in request.session:
+            if request.method == 'POST':
+                id = request.POST['id']
+                agent_details = list(
+                    models.Agent.objects.values('agent_id', 'agent_name', 'agent_usercode', 'agent_email',
+                                                'agent_mobile', 'agent_address', 'agent_state',
+                                                'admin_id__kycadmin_usercode').filter(
+                        agent_id=id))
+                return JsonResponse({'result': 'success', 'agent_details': agent_details})
+    except Exception as e:
+        print('Exception in fetch_admin_details_by_id  /management_app/views.py  -->', e)
+        return JsonResponse({"result": "failed", 'msg': 'Failed to load agent details! Refresh the Page'})
+
+
+def send_login_credentials_in_email(email, pwd):
+    try:
+        send_manually_email(subject='Registraion Successfull',
+                            message="Dear Sir/Madam,\n\n"
+                                    "Please note your email id and password to access your account.\n"
+                                    "Email-id: " + email + "\n"
+                                                           "Password: " + pwd + ""
+                            , to=email)
+    except Exception as e:
+        print('Exception in send_login_credentials_in_email --->', e)
+        pass
+    return 'Email Sent'
+
+
+@csrf_exempt
+def delete_admin_details_by_id(request):
+    try:
+        if 'usercode' in request.session:
+            if request.method == 'POST':
+                id = request.POST['id']
+                admin_object = models.KycAdmin.objects.get(admin_id=id)
+                models.KycAdmin.objects.filter(admin_id=id).delete()
+                models.AuthUsers.objects.filter(user_code=admin_object.kycadmin_usercode).delete()
+                return JsonResponse({'result': 'deleted', 'msg': 'Admin deleted successfully'})
+    except Exception as e:
+        print('Exception in fetch_admin_details_by_id  /management_app/views.py  -->', e)
+        return JsonResponse({"result": "failed", 'msg': 'Failed to delete! Try again'})
+
+
+@csrf_exempt
+def delete_agent_details_by_id(request):
+    try:
+        if 'usercode' in request.session:
+            if request.method == 'POST':
+                id = request.POST['id']
+                agent_object = models.Agent.objects.get(agent_id=id)
+                models.Agent.objects.filter(agent_id=id).delete()
+                models.AuthUsers.objects.filter(user_code=agent_object.agent_usercode).delete()
+                return JsonResponse({'result': 'deleted', 'msg': 'Agent deleted successfully'})
+    except Exception as e:
+        print('Exception in fetch_admin_details_by_id  /management_app/views.py  -->', e)
+        return JsonResponse({"result": "failed", 'msg': 'Failed to delete! Try again'})
