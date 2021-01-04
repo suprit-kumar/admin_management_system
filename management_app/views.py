@@ -152,6 +152,49 @@ def save_admin_details(request):
 
 
 @csrf_exempt
+def save_client_details(request):
+    try:
+        if 'usercode' in request.session:
+            if request.method == 'POST':
+                clientHiddenUniqueCode = request.POST['clientHiddenUniqueCode']
+                clientEmail = request.POST['clientEmail']
+                clientName = request.POST['clientName']
+                clientMobile = request.POST['clientMobile']
+                clientState = request.POST['clientState']
+                clientAddress = request.POST['clientAddress']
+
+                if clientHiddenUniqueCode == '':
+                    chek_email_exist = models.Client.objects.filter(client_email=clientEmail).exists()
+                    if chek_email_exist is False:
+                        unique_usercode = getUniqueUserCode()
+                        models.Client.objects.create(client_usercode=unique_usercode,
+                                                     client_name=clientName,
+                                                     client_email=clientEmail,
+                                                     client_mobile=clientMobile,
+                                                     client_address=clientAddress,
+                                                     client_state=clientState,
+                                                     )
+
+                        return JsonResponse({'result': 'created',
+                                             'msg': 'New Client Added Successfully'})
+
+                    elif chek_email_exist is True:
+                        return JsonResponse({'result': 'email_already_exists',
+                                             'msg': 'We have already an account with this email id! Try another email id'})
+                else:
+                    models.Client.objects.filter(client_usercode=clientHiddenUniqueCode).update(
+                        client_name=clientName,
+                        client_mobile=clientMobile,
+                        client_address=clientAddress,
+                        client_state=clientState,
+                    )
+                    return JsonResponse({'result': 'updated', 'msg': 'Details updated successfully'})
+    except Exception as e:
+        print('Exception in save_client_details /management_app/views.py -->', e)
+        return JsonResponse({'result': 'failed', 'msg': 'Failed to save details! Try again'})
+
+
+@csrf_exempt
 def save_agent_details_by_superadmin(request):
     try:
         if 'usercode' in request.session:
@@ -275,7 +318,7 @@ def fetch_all_agents_under_admin(request):
     try:
         if 'usercode' in request.session:
             user_code = request.session['usercode']
-
+            print(request)
             if request.method == 'POST':
                 kycadmin_id = models.KycAdmin.objects.get(kycadmin_usercode=user_code)
                 agents_under_admin = list(
@@ -283,7 +326,7 @@ def fetch_all_agents_under_admin(request):
                                                 'agent_address', 'agent_state').
                         filter(admin_id=models.KycAdmin.objects.get(admin_id=kycadmin_id.admin_id)).
                         order_by('-created_time'))
-
+                print(agents_under_admin)
                 return JsonResponse({'result': 'success', 'agents_under_admin': agents_under_admin})
     except Exception as e:
         print('Exception in fetch_all_agents_under_admin  /management_app/views.py  -->', e)
@@ -304,6 +347,22 @@ def fetch_all_admins_under_for_superadmin(request):
     except Exception as e:
         print('Exception in fetch_all_agents_under_admin  /management_app/views.py  -->', e)
         return JsonResponse({"result": "failed", 'msg': 'Failed to load agents! Refresh the Page'})
+
+
+@csrf_exempt
+def fetch_all_client_for_superadmin(request):
+    try:
+        if 'usercode' in request.session:
+            if request.method == 'POST':
+                all_clients = list(
+                    models.Client.objects.all().values('client_id', 'client_name', 'client_usercode',
+                                                       'client_email',
+                                                       'client_mobile', 'client_address', 'client_state').
+                        order_by('-created_time'))
+                return JsonResponse({'result': 'success', 'all_clients': all_clients})
+    except Exception as e:
+        print('Exception in fetch_all_client_for_superadmin  /management_app/views.py  -->', e)
+        return JsonResponse({"result": "failed", 'msg': 'Failed to load clients! Refresh the Page'})
 
 
 @csrf_exempt
@@ -336,6 +395,23 @@ def fetch_admin_details_by_id(request):
     except Exception as e:
         print('Exception in fetch_admin_details_by_id  /management_app/views.py  -->', e)
         return JsonResponse({"result": "failed", 'msg': 'Failed to load admin details! Refresh the Page'})
+
+
+@csrf_exempt
+def fetch_client_details_by_id(request):
+    try:
+        if 'usercode' in request.session:
+            if request.method == 'POST':
+                id = request.POST['id']
+                client_details = list(
+                    models.Client.objects.values('client_id', 'client_name', 'client_usercode', 'client_email',
+                                                 'client_mobile', 'client_address', 'client_state').filter(
+                        client_id=id))
+
+                return JsonResponse({'result': 'success', 'client_details': client_details})
+    except Exception as e:
+        print('Exception in fetch_client_details_by_id  /management_app/views.py  -->', e)
+        return JsonResponse({"result": "failed", 'msg': 'Failed to load client details! Refresh the Page'})
 
 
 @csrf_exempt
@@ -396,4 +472,17 @@ def delete_agent_details_by_id(request):
                 return JsonResponse({'result': 'deleted', 'msg': 'Agent deleted successfully'})
     except Exception as e:
         print('Exception in fetch_admin_details_by_id  /management_app/views.py  -->', e)
+        return JsonResponse({"result": "failed", 'msg': 'Failed to delete! Try again'})
+
+
+@csrf_exempt
+def delete_client_details_by_id(request):
+    try:
+        if 'usercode' in request.session:
+            if request.method == 'POST':
+                id = request.POST['id']
+                models.Client.objects.filter(client_id=id).delete()
+                return JsonResponse({'result': 'deleted', 'msg': 'Client deleted successfully'})
+    except Exception as e:
+        print('Exception in delete_client_details_by_id  /management_app/views.py  -->', e)
         return JsonResponse({"result": "failed", 'msg': 'Failed to delete! Try again'})

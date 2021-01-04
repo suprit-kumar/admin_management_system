@@ -53,6 +53,24 @@ class Agent(models.Model):
         return u'%s' % [self.agent_id]
 
 
+class Clients(models.Model):
+    client_id = models.AutoField(primary_key=True)
+    client_name = models.CharField(max_length=100, null=True, default="")
+    client_usercode = models.CharField(max_length=100, null=True, default="")
+    client_email = models.CharField(max_length=100, null=True, default="")
+    client_mobile = models.CharField(default='', null=True, max_length=10)
+    client_address = models.CharField(max_length=250, null=True, default="")
+    client_state = models.CharField(max_length=50, null=True, default="")
+    client_status = models.CharField(max_length=50, null=True, default="New")
+    created_time = models.DateTimeField(auto_now_add=True, blank=True)
+
+    class Meta:
+        db_table = "clients"
+
+    def __unicode__(self):
+        return u'%s' % [self.client_id]
+
+
 class AuthUsers(models.Model):
     u_id = models.AutoField(primary_key=True)
     user_code = models.CharField(max_length=50, null=True, default="")

@@ -2,12 +2,18 @@ $(document).ready(function () {
 
     fetchAllAdminForSuperadmin();
     fetchAllAgentsForSuperadmin();
+    fetchAllClientsForSuperadmin();
+
     $('#save_admin_details_btn').click(function () {
         saveAdminDetails();
     });
 
     $("#superadmin_save_agent_details").click(function () {
         saveAgentDetailsBySuperadmin();
+    });
+
+    $("#save_client_details_btn").click(function () {
+        saveClientDetails();
     });
 
     $('#addNewAdminModal').on('hidden.bs.modal', function (e) {
@@ -17,6 +23,11 @@ $(document).ready(function () {
     $('#addNewAgentBehalf_ofAdminModal').on('hidden.bs.modal', function (e) {
         $("#agentHiddenCode,#select_admin_for_agent,#admin_name_input,#admin_mobile_input,#admin_state_input,#admin_address_input").val('');
     });
+
+    $('#create_update_client_modal').on('hidden.bs.modal', function (e) {
+        $("#clientHiddenCode,#client_email_input,#client_name_input,#client_mobile_input,#client_state_input,#client_address_input").val('');
+    });
+
 });
 
 
@@ -333,6 +344,144 @@ function saveAgentDetailsBySuperadmin() {
         })
     }
 }
+
+function saveClientDetails() {
+    const clientHiddenUniqueCode = $('#clientHiddenCode').val();
+    const clientEmail = $('#client_email_input').val();
+    const clientName = $('#client_name_input').val();
+    const clientMobile = $('#client_mobile_input').val();
+    const clientState = $('#client_state_input').val();
+    const clientAddress = $('#client_address_input').val();
+    const emailadd = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+    if (clientEmail === '') {
+        swal("Enter Emailid");
+        return false;
+    } else if (!(emailadd.test(clientEmail))) {
+        swal("Enter Valid Email Id");
+        return false;
+    } else {
+        const details = {
+            'clientHiddenUniqueCode': clientHiddenUniqueCode,
+            'clientEmail': clientEmail,
+            'clientName': clientName,
+            'clientMobile': clientMobile,
+            'clientState': clientState,
+            'clientAddress': clientAddress
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/superadmin/save_client_details/',
+            data: details,
+            success: function (response) {
+                if (response.result === 'created') {
+                    swal(response.msg);
+                    reload();
+                } else if (response.result === 'updated') {
+                    swal(response.msg);
+                    reload();
+                } else if (response.result === 'email_already_exists') {
+                    swal(response.msg);
+                } else if (response.result === 'failed') {
+                    swal(response.msg);
+                }
+            }, error: function (error) {
+                console.log('Error in saveClientDetails function ->', error);
+            }
+        })
+    }
+}
+
+function fetchAllClientsForSuperadmin() {
+    $.ajax({
+        type: 'POST',
+        url: '/superadmin/fetch_all_client_for_superadmin/',
+        async: false,
+        success: function (response) {
+            if (response.result === 'success') {
+                $('#client_details_tab > tbody').empty();
+                response.all_clients.forEach(function (client) {
+                    let clientTableDetails = "<tr>" +
+                        "<td>" + client.client_name + "</td>" +
+                        "<td>" + client.client_email + "</td>" +
+                        "<td>" + client.client_mobile + "</td>" +
+                        "<td>" + client.client_state + "</td>" +
+                        "<td>" + client.client_address + "</td>" +
+                        "<td>" + "<button id='" + client.client_id + "' class='btn btn-info btn-sm edit-client-details'>Edit</button><button id='" + client.client_id + "' class='btn btn-sm delete-client-details btn-danger'>Delete</button>" + "</td>";
+                    clientTableDetails += "</tr>";
+                    $('#client_details_tab > tbody').append(clientTableDetails);
+                });
+                $('#client_details_tab').DataTable({
+                    'destroy': true,
+                    "ordering": false,
+                    'searching': true,
+                    'retrieve': true,
+                });
+                $('.dataTables_length').addClass('bs-select');
+
+                $('.edit-client-details').click(function () {
+                    const id = $(this).attr('id');
+                    fetchClientDetailsById(id);
+                    $('#create_update_client_modal').modal('show');
+                });
+
+                $('.delete-client-details').click(function () {
+                    const id = $(this).attr('id');
+                    deleteClientDetailsById(id);
+                });
+            } else if (response.result === 'failed') {
+                swal(response.msg);
+            }
+        }, error: function (error) {
+            console.log('Error in fetchAllAdminForSuperadmin function -->', error);
+        }
+    })
+}
+
+
+function fetchClientDetailsById(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/fetch_client_details_by_id/',
+        data: {'id': id},
+        success: function (response) {
+            if (response.result === 'success') {
+                const details = response.client_details[0];
+                $('#clientHiddenCode').val(details.client_usercode);
+                $('#client_email_input').val(details.client_email);
+                $('#client_name_input').val(details.client_name);
+                $('#client_mobile_input').val(details.client_mobile);
+                $('#client_state_input').val(details.client_state);
+                $('#client_address_input').val(details.client_address);
+            } else if (response.result === 'failed') {
+                swal(response.msg);
+            }
+        }, error: function (error) {
+            console.log("Error in fetchClientDetailsById function --->", error);
+        }
+    })
+}
+
+
+function deleteClientDetailsById(id) {
+    $.ajax({
+        type: 'POST',
+        url: '/delete_client_details_by_id/',
+        data: {'id': id},
+        success: function (response) {
+            if (response.result === 'deleted') {
+                fetchAllClientsForSuperadmin();
+                swal(response.msg);
+            } else if (response.result === 'failed') {
+                fetchAllClientsForSuperadmin();
+                swal(response.msg);
+            }
+        }, error: function (error) {
+            console.log('Error in deleteAdminDetailsById function --->', error);
+        },
+    })
+}
+
 
 function keyValidate() {
     var e = event || window.event;  // get event object
