@@ -63,6 +63,10 @@ class Clients(models.Model):
     client_state = models.CharField(max_length=50, null=True, default="")
     client_status = models.CharField(max_length=50, null=True, default="New")
     created_time = models.DateTimeField(auto_now_add=True, blank=True)
+    check_uncheck_status = models.BooleanField(default=False)
+    agent_id = models.ForeignKey(Agent, on_delete=models.CASCADE,null = True)
+    checked_time = models.CharField(max_length=50, null=True, default="")
+
 
     class Meta:
         db_table = "clients"

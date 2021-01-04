@@ -164,16 +164,16 @@ def save_client_details(request):
                 clientAddress = request.POST['clientAddress']
 
                 if clientHiddenUniqueCode == '':
-                    chek_email_exist = models.Client.objects.filter(client_email=clientEmail).exists()
+                    chek_email_exist = models.Clients.objects.filter(client_email=clientEmail).exists()
                     if chek_email_exist is False:
                         unique_usercode = getUniqueUserCode()
-                        models.Client.objects.create(client_usercode=unique_usercode,
-                                                     client_name=clientName,
-                                                     client_email=clientEmail,
-                                                     client_mobile=clientMobile,
-                                                     client_address=clientAddress,
-                                                     client_state=clientState,
-                                                     )
+                        models.Clients.objects.create(client_usercode=unique_usercode,
+                                                      client_name=clientName,
+                                                      client_email=clientEmail,
+                                                      client_mobile=clientMobile,
+                                                      client_address=clientAddress,
+                                                      client_state=clientState,
+                                                      )
 
                         return JsonResponse({'result': 'created',
                                              'msg': 'New Client Added Successfully'})
@@ -182,7 +182,7 @@ def save_client_details(request):
                         return JsonResponse({'result': 'email_already_exists',
                                              'msg': 'We have already an account with this email id! Try another email id'})
                 else:
-                    models.Client.objects.filter(client_usercode=clientHiddenUniqueCode).update(
+                    models.Clients.objects.filter(client_usercode=clientHiddenUniqueCode).update(
                         client_name=clientName,
                         client_mobile=clientMobile,
                         client_address=clientAddress,
@@ -350,18 +350,19 @@ def fetch_all_admins_under_for_superadmin(request):
 
 
 @csrf_exempt
-def fetch_all_client_for_superadmin(request):
+def fetch_all_client(request):
     try:
         if 'usercode' in request.session:
             if request.method == 'POST':
                 all_clients = list(
-                    models.Client.objects.all().values('client_id', 'client_name', 'client_usercode',
-                                                       'client_email',
-                                                       'client_mobile', 'client_address', 'client_state').
+                    models.Clients.objects.all().values('client_id', 'client_name', 'client_usercode',
+                                                        'client_email', 'client_status', 'check_uncheck_status',
+                                                        'agent_id__agent_name', 'checked_time',
+                                                        'client_mobile', 'client_address', 'client_state').
                         order_by('-created_time'))
                 return JsonResponse({'result': 'success', 'all_clients': all_clients})
     except Exception as e:
-        print('Exception in fetch_all_client_for_superadmin  /management_app/views.py  -->', e)
+        print('Exception in fetch_all_client  /management_app/views.py  -->', e)
         return JsonResponse({"result": "failed", 'msg': 'Failed to load clients! Refresh the Page'})
 
 
@@ -404,8 +405,8 @@ def fetch_client_details_by_id(request):
             if request.method == 'POST':
                 id = request.POST['id']
                 client_details = list(
-                    models.Client.objects.values('client_id', 'client_name', 'client_usercode', 'client_email',
-                                                 'client_mobile', 'client_address', 'client_state').filter(
+                    models.Clients.objects.values('client_id', 'client_name', 'client_usercode', 'client_email',
+                                                  'client_mobile', 'client_address', 'client_state').filter(
                         client_id=id))
 
                 return JsonResponse({'result': 'success', 'client_details': client_details})
@@ -481,8 +482,37 @@ def delete_client_details_by_id(request):
         if 'usercode' in request.session:
             if request.method == 'POST':
                 id = request.POST['id']
-                models.Client.objects.filter(client_id=id).delete()
+                models.Clients.objects.filter(client_id=id).delete()
                 return JsonResponse({'result': 'deleted', 'msg': 'Client deleted successfully'})
     except Exception as e:
         print('Exception in delete_client_details_by_id  /management_app/views.py  -->', e)
         return JsonResponse({"result": "failed", 'msg': 'Failed to delete! Try again'})
+
+
+@csrf_exempt
+def check_and_update_client_status(request):
+    try:
+        if 'usercode' in request.session:
+            current_date = datetime.date.today()
+            models.Clients.objects.filter(created_time__lt=current_date).update(client_status='Existing')
+            return JsonResponse({'result': 'success'})
+    except Exception as e:
+        print('Exception in update_client_status  /management_app/views.py  -->', e)
+        return JsonResponse({'result': 'failed', 'msg': 'Failed to update client status'})
+
+
+@csrf_exempt
+def check_client_by_agent(request):
+    try:
+        if 'usercode' in request.session:
+            user_code = request.session['usercode']
+            if request.method == 'POST':
+                client_id = request.POST['clientId']
+                models.Clients.objects.filter(client_id=client_id).update(check_uncheck_status=True,
+                                                                          checked_time=datetime.datetime.now(),
+                                                                          agent_id=models.Agent.objects.get(
+                                                                              agent_usercode=user_code))
+                return JsonResponse({'result': 'success'})
+    except Exception as e:
+        print('Exception in check_client_by_agent  /management_app/views.py  -->', e)
+        return JsonResponse({'result': 'failed', 'msg': 'Failed to check client! Refresh the page and try again'})

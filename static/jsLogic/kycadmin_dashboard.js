@@ -1,6 +1,8 @@
 $(document).ready(function () {
+    updateClientStatus();
     fetchAllAgentsUnderAdmin();
-    fetchAllClientsForSuperadmin();
+    fetchAllClientsForAdmin();
+
     $('#save_agent_details').click(function () {
         saveAgentDetails();
     });
@@ -146,10 +148,10 @@ function fetchAgentDetailsById(id) {
 }
 
 
-function fetchAllClientsForSuperadmin() {
+function fetchAllClientsForAdmin() {
     $.ajax({
         type: 'POST',
-        url: '/superadmin/fetch_all_client_for_superadmin/',
+        url: '/superadmin/fetch_all_client/',
         async: false,
         success: function (response) {
             if (response.result === 'success') {
@@ -161,7 +163,15 @@ function fetchAllClientsForSuperadmin() {
                         "<td>" + client.client_mobile + "</td>" +
                         "<td>" + client.client_state + "</td>" +
                         "<td>" + client.client_address + "</td>" +
-                        "<td>" + "<button id='" + client.client_id + "' class='btn btn-info btn-sm edit-client-details'>Edit</button>" + "</td>";
+                        "<td>" + client.client_status + "</td>";
+                    if (client.agent_id__agent_name === null) {
+                        clientTableDetails += "<td></td>";
+                    } else {
+                        clientTableDetails += "<td>" + client.agent_id__agent_name + "</td>";
+                    }
+                    clientTableDetails += "<td>" + client.checked_time + "</td>";
+                    clientTableDetails += "<td>" + "<button id='" + client.client_id + "' class='btn btn-info btn-sm edit-client-details'>Edit</button>" + "</td>";
+
                     clientTableDetails += "</tr>";
                     $('#client_details_tab > tbody').append(clientTableDetails);
                 });
@@ -253,6 +263,22 @@ function saveClientDetails() {
     }
 }
 
+function updateClientStatus() {
+    $.ajax({
+        type: 'POST',
+        url: '/update_client_status/',
+        async: true,
+        success: function (response) {
+            if (response.result === 'success') {
+
+            } else if (response.result === 'failed') {
+                swal(response.msg)
+            }
+        }, error: function (error) {
+            console.log("Error in updateClientStatus function -->", error);
+        }
+    })
+}
 
 function keyValidate() {
     var e = event || window.event;  // get event object

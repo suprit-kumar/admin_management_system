@@ -33,8 +33,8 @@ urlpatterns = [
          name='save_agent_details_by_superadmin'),
     path('superadmin/fetch_all_admins_under_for_superadmin/',
          views.fetch_all_admins_under_for_superadmin, name='fetch_all_admins_under_for_superadmin'),
-    path('superadmin/fetch_all_client_for_superadmin/',
-         views.fetch_all_client_for_superadmin, name='fetch_all_client_for_superadmin'),
+    path('superadmin/fetch_all_client/',
+         views.fetch_all_client, name='fetch_all_client'),
     path('superadmin/fetch_all_agents_under_for_superadmin/',
          views.fetch_all_agents_under_for_superadmin, name='fetch_all_agents_under_for_superadmin'),
     path('admin/save_agent_details_by_kycadmin/', views.save_agent_details_by_kycadmin,
@@ -49,4 +49,7 @@ urlpatterns = [
     path('delete_admin_details_by_id/', views.delete_admin_details_by_id, name='delete_admin_details_by_id'),
     path('delete_agent_details_by_id/', views.delete_agent_details_by_id, name='delete_agent_details_by_id'),
     path('delete_client_details_by_id/', views.delete_client_details_by_id, name='delete_client_details_by_id'),
+    path('check_and_update_client_status/', views.check_and_update_client_status,
+         name='check_and_update_client_status'),
+    path('check_client_by_agent/', views.check_client_by_agent, name='check_client_by_agent'),
 ]

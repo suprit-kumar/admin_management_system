@@ -8,12 +8,42 @@
 
 {% block content %}
 
+    <div class="container-fluid">
+        <div class="table-conatiner mt-4 ml-2 mr-2"
+             style="background: aliceblue;border: 1px solid black;padding: 10px;">
+            <div class="wrapper-editor mt-2">
+                <div class="text-center">
 
+                </div>
+            </div>
+            <h4 class="btn  btn-rounded btn-sm btn-black  text-center table-name-btn" style="float: left;color: white">
+                Client List</h4>
+            <table id="client_details_tab" class="table table-striped table-bordered table-sm mt-2" cellspacing="0"
+                   width="100%">
+                <thead class="#2962ff blue accent-4">
+                <tr>
+                    <th class="th-sm">Name</th>
+                    <th class="th-sm">Email</th>
+                    <th class="th-sm">Mobile</th>
+                    <th class="th-sm">State</th>
+                    <th class="th-sm">Address</th>
+                    <th class="th-sm">Status</th>
+                    <th class="th-sm">Picked By (Agent)</th>
+                    <th class="th-sm">Checked Time</th>
+                    <th class="th-sm">Check</th>
+                </tr>
+                </thead>
+                <tbody>
 
-
+                </tbody>
+            </table>
+            <!-- Table End -->
+        </div>
+    </div>
 
 
 {% endblock %}
 
 {% block fscripts %}
+    <script type="text/javascript" src="{% static 'jsLogic/agent_dashboard.js' %}"></script>
 {% endblock %}

@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+    updateClientStatus();
     fetchAllAdminForSuperadmin();
     fetchAllAgentsForSuperadmin();
     fetchAllClientsForSuperadmin();
@@ -395,7 +395,7 @@ function saveClientDetails() {
 function fetchAllClientsForSuperadmin() {
     $.ajax({
         type: 'POST',
-        url: '/superadmin/fetch_all_client_for_superadmin/',
+        url: '/superadmin/fetch_all_client/',
         async: false,
         success: function (response) {
             if (response.result === 'success') {
@@ -407,7 +407,14 @@ function fetchAllClientsForSuperadmin() {
                         "<td>" + client.client_mobile + "</td>" +
                         "<td>" + client.client_state + "</td>" +
                         "<td>" + client.client_address + "</td>" +
-                        "<td>" + "<button id='" + client.client_id + "' class='btn btn-info btn-sm edit-client-details'>Edit</button><button id='" + client.client_id + "' class='btn btn-sm delete-client-details btn-danger'>Delete</button>" + "</td>";
+                        "<td>" + client.client_status + "</td>";
+                    if (client.agent_id__agent_name === null) {
+                        clientTableDetails += "<td></td>";
+                    } else {
+                        clientTableDetails += "<td>" + client.agent_id__agent_name + "</td>";
+                    }
+                    clientTableDetails += "<td>" + client.checked_time + "</td>";
+                    clientTableDetails += "<td>" + "<button id='" + client.client_id + "' class='btn btn-info btn-sm edit-client-details'>Edit</button><button id='" + client.client_id + "' class='btn btn-sm delete-client-details btn-danger'>Delete</button>" + "</td>";
                     clientTableDetails += "</tr>";
                     $('#client_details_tab > tbody').append(clientTableDetails);
                 });
@@ -482,6 +489,23 @@ function deleteClientDetailsById(id) {
     })
 }
 
+
+function updateClientStatus() {
+    $.ajax({
+        type: 'POST',
+        url: '/update_client_status/',
+        async: true,
+        success: function (response) {
+            if (response.result === 'success') {
+
+            } else if (response.result === 'failed') {
+                swal(response.msg)
+            }
+        }, error: function (error) {
+            console.log("Error in updateClientStatus function -->", error);
+        }
+    })
+}
 
 function keyValidate() {
     var e = event || window.event;  // get event object
