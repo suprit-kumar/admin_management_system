@@ -14,7 +14,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header text-center">
-                    <h4 class="modal-title w-100 font-weight-bold">Add New Agent</h4>
+                    <h4 class="modal-title w-100 font-weight-bold">Agent Details</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -75,7 +75,6 @@
         </div>
     </div>
 
-
     {#  client update Modal  #}
     <div class="modal fade" id="create_update_client_modal" tabindex="-1" role="dialog"
          aria-labelledby="myModalLabel"
@@ -83,7 +82,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header text-center">
-                    <h4 class="modal-title w-100 font-weight-bold">Client Form</h4>
+                    <h4 class="modal-title w-100 font-weight-bold">Client Details</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -143,6 +142,23 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="formCheckDetailsModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">No of Forms Checked</h5>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><b>Agent Name: </b><span id="form_checked_agent_name"></span></p>
+                    <p><b>No of Forms Checked: </b><span id="no_of_forms_checked"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="container-fluid">
         <div class="table-conatiner mt-4 ml-2 mr-2"
@@ -153,7 +169,7 @@
                 </div>
             </div>
             <h4 class="btn  btn-rounded btn-sm btn-black  text-center table-name-btn" style="float: left;color: white">
-                Agent List</h4>
+                My Agents</h4>
             <a href="javascript:void(0)" class="btn  btn-rounded btn-sm" data-toggle="modal" style="float: right"
                data-target="#agentFormModal">Add New Agent<i
                     class="fas fa-plus-square ml-1"></i></a>
@@ -167,6 +183,7 @@
                     <th class="th-sm">State</th>
                     <th class="th-sm">Address</th>
                     <th class="th-sm">Action</th>
+                    <th class="th-sm">Form Checked</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -198,8 +215,8 @@
                     <th class="th-sm">State</th>
                     <th class="th-sm">Address</th>
                     <th class="th-sm">Status</th>
-                    <th class="th-sm">Checked Time</th>
                     <th class="th-sm">Picked By (Agent)</th>
+                    <th class="th-sm">Checked Time</th>
                     <th class="th-sm">Action</th>
                 </tr>
                 </thead>

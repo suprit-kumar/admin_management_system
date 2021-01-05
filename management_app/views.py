@@ -490,7 +490,7 @@ def delete_client_details_by_id(request):
 
 
 @csrf_exempt
-def check_and_update_client_status(request):
+def update_client_status(request):
     try:
         if 'usercode' in request.session:
             current_date = datetime.date.today()
@@ -516,3 +516,17 @@ def check_client_by_agent(request):
     except Exception as e:
         print('Exception in check_client_by_agent  /management_app/views.py  -->', e)
         return JsonResponse({'result': 'failed', 'msg': 'Failed to check client! Refresh the page and try again'})
+
+
+@csrf_exempt
+def fetch_checked_form_details(request):
+    try:
+        if 'usercode' in request.session:
+            if request.method == 'POST':
+                agentId = request.POST['agentId']
+                count_form_checked = models.Clients.objects.filter(agent_id=models.Agent.objects.get(agent_id=agentId),
+                                                                   check_uncheck_status=True).count()
+                return JsonResponse({'result': 'success', 'form_checked_count': count_form_checked})
+    except Exception as e:
+        print('Exception in fetch_checked_form_details  /management_app/views.py  -->', e)
+        return JsonResponse({'result': 'failed', 'msg': 'Failed to load form checked details! Try again'})

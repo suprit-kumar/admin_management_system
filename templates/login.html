@@ -10,41 +10,6 @@
 </head>
 <body>
 
-<!--modal reset password-->
-<div id="reset_password_modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6 class="text-center">What's My Password ?</h6>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body">
-                <div class="col-md-12">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <div class="text-center">
-
-                                <p>If you have forgotten your password you can reset it here.</p><br>
-                                <div class="panel-body">
-
-                                    <div class="form-group">
-                                        <input class="form-control input-lg" id="email_reset_pwd"
-                                               placeholder="Enter Username"
-                                               type="email">
-                                    </div>
-                                    <button class="btn btn-sm btn-primary btn-block" id="reset_password"
-                                            style="padding: 12px;"
-                                    >Send My Password
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="global-container">
     <div class="card login-form">
@@ -53,6 +18,7 @@
             <div class="card-text">
 
                 <form action="javascript:void(0)">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="email_input">Email address</label>
                         <input type="email" class="form-control form-control-sm" id="email_input"

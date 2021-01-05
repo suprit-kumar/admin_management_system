@@ -70,9 +70,11 @@ function saveAdminDetails() {
             'adminState': adminState,
             'adminAddress': adminAddress
         };
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         $.ajax({
             type: 'POST',
             url: '/superadmin/save_admin_details/',
+            headers: {'X-CSRFToken': csrftoken},
             data: details,
             success: function (response) {
                 if (response.result === 'created') {
@@ -144,7 +146,6 @@ function fetchAllAdminForSuperadmin() {
         }
     })
 }
-
 
 function deleteAdminDetailsById(id) {
     $.ajax({
@@ -320,9 +321,11 @@ function saveAgentDetailsBySuperadmin() {
             'agentState': agentState,
             'agentAddress': agentAddress
         };
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         $.ajax({
             type: 'POST',
             url: '/superadmin/save_agent_details_by_superadmin/',
+            headers: {'X-CSRFToken': csrftoken},
             data: details,
             success: function (response) {
                 if (response.result === 'created') {
@@ -369,9 +372,11 @@ function saveClientDetails() {
             'clientState': clientState,
             'clientAddress': clientAddress
         };
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         $.ajax({
             type: 'POST',
             url: '/superadmin/save_client_details/',
+            headers: {'X-CSRFToken': csrftoken},
             data: details,
             success: function (response) {
                 if (response.result === 'created') {
@@ -413,7 +418,7 @@ function fetchAllClientsForSuperadmin() {
                     } else {
                         clientTableDetails += "<td>" + client.agent_id__agent_name + "</td>";
                     }
-                    clientTableDetails += "<td>" + client.checked_time + "</td>";
+                    clientTableDetails += "<td>" + client.checked_time.split('.')[0] + "</td>";
                     clientTableDetails += "<td>" + "<button id='" + client.client_id + "' class='btn btn-info btn-sm edit-client-details'>Edit</button><button id='" + client.client_id + "' class='btn btn-sm delete-client-details btn-danger'>Delete</button>" + "</td>";
                     clientTableDetails += "</tr>";
                     $('#client_details_tab > tbody').append(clientTableDetails);
@@ -445,7 +450,6 @@ function fetchAllClientsForSuperadmin() {
     })
 }
 
-
 function fetchClientDetailsById(id) {
     $.ajax({
         type: 'POST',
@@ -469,7 +473,6 @@ function fetchClientDetailsById(id) {
     })
 }
 
-
 function deleteClientDetailsById(id) {
     $.ajax({
         type: 'POST',
@@ -488,7 +491,6 @@ function deleteClientDetailsById(id) {
         },
     })
 }
-
 
 function updateClientStatus() {
     $.ajax({

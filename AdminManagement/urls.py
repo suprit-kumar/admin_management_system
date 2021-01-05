@@ -49,7 +49,8 @@ urlpatterns = [
     path('delete_admin_details_by_id/', views.delete_admin_details_by_id, name='delete_admin_details_by_id'),
     path('delete_agent_details_by_id/', views.delete_agent_details_by_id, name='delete_agent_details_by_id'),
     path('delete_client_details_by_id/', views.delete_client_details_by_id, name='delete_client_details_by_id'),
-    path('check_and_update_client_status/', views.check_and_update_client_status,
-         name='check_and_update_client_status'),
+    path('update_client_status/', views.update_client_status,
+         name='update_client_status'),
     path('check_client_by_agent/', views.check_client_by_agent, name='check_client_by_agent'),
+    path('fetch_checked_form_details/', views.fetch_checked_form_details, name='fetch_checked_form_details'),
 ]

@@ -30,15 +30,16 @@ function validateFields() {
 
 function checkuser(useremail, password) {
     $('#signInBtn').prop('disabled', true);
-
     const flag = false;
     const UserDetails = {
         "useremail": useremail,
         "password": password
     };
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     $.ajax({
         type: "POST",
         url: "/login_operation/",
+        headers: {'X-CSRFToken': csrftoken},
         data: UserDetails,
         async: false,
         success: function (data) {

@@ -51,9 +51,11 @@ function saveAgentDetails() {
             'agentState': agentState,
             'agentAddress': agentAddress
         };
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         $.ajax({
             type: 'POST',
             url: '/admin/save_agent_details_by_kycadmin/',
+            headers: {'X-CSRFToken': csrftoken},
             data: details,
             success: function (response) {
                 if (response.result === 'created') {
@@ -90,7 +92,8 @@ function fetchAllAgentsUnderAdmin() {
                         "<td>" + agent.agent_mobile + "</td>" +
                         "<td>" + agent.agent_state + "</td>" +
                         "<td>" + agent.agent_address + "</td>" +
-                        "<td>" + "<button id='" + agent.agent_id + "' class='btn btn-info btn-sm edit-agent-details'>Edit</button>" + "</td>";
+                        "<td>" + "<button id='" + agent.agent_id + "' class='btn btn-info btn-sm edit-agent-details'>Edit</button>" + "</td>" +
+                        "<td>" + "<button id='" + agent.agent_id + "' value='" + agent.agent_name + "' class='btn btn-info btn-sm btn-dark agent-form-check-details'>View</button>" + "</td>";
 
                     tableDetails += "</tr>";
                     $('#agent_details_tab > tbody').append(tableDetails);
@@ -114,6 +117,14 @@ function fetchAllAgentsUnderAdmin() {
                     $('#agentFormModal').modal('show');
                 });
 
+                $('.agent-form-check-details').click(function () {
+                    const agentId = $(this).attr('id');
+                    const agentName = $(this).attr('value');
+                    fetchCheckedFormDetails(agentId, agentName);
+                    $('#formCheckDetailsModal').modal('show');
+                });
+
+
             } else if (response.result === 'failed') {
                 swal(response.msg);
             }
@@ -122,6 +133,26 @@ function fetchAllAgentsUnderAdmin() {
         }
     })
 }
+
+function fetchCheckedFormDetails(agentId, agentName) {
+    $.ajax({
+        type: 'POST',
+        url: '/fetch_checked_form_details/',
+        data: {'agentId': agentId},
+        async: false,
+        success: function (response) {
+            if (response.result === 'success') {
+                $('#form_checked_agent_name').text(agentName);
+                $('#no_of_forms_checked').text(response.form_checked_count);
+            } else if (response.result === 'failed') {
+                swal(response.msg);
+            }
+        }, error: function (error) {
+            console.log("Error in fetchCheckedFormDetails function --->", error);
+        }
+    })
+}
+
 
 function fetchAgentDetailsById(id) {
     $.ajax({
@@ -147,7 +178,6 @@ function fetchAgentDetailsById(id) {
     })
 }
 
-
 function fetchAllClientsForAdmin() {
     $.ajax({
         type: 'POST',
@@ -169,7 +199,7 @@ function fetchAllClientsForAdmin() {
                     } else {
                         clientTableDetails += "<td>" + client.agent_id__agent_name + "</td>";
                     }
-                    clientTableDetails += "<td>" + client.checked_time + "</td>";
+                    clientTableDetails += "<td>" + client.checked_time.split('.')[0] + "</td>";
                     clientTableDetails += "<td>" + "<button id='" + client.client_id + "' class='btn btn-info btn-sm edit-client-details'>Edit</button>" + "</td>";
 
                     clientTableDetails += "</tr>";
@@ -245,9 +275,11 @@ function saveClientDetails() {
             'clientState': clientState,
             'clientAddress': clientAddress
         };
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         $.ajax({
             type: 'POST',
             url: '/superadmin/save_client_details/',
+            headers: {'X-CSRFToken': csrftoken},
             data: details,
             success: function (response) {
                 if (response.result === 'updated') {

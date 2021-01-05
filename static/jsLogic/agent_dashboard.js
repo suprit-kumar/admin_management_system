@@ -24,7 +24,7 @@ function fetchAllClientsForAgent() {
                     } else {
                         clientTableDetails += "<td>" + client.agent_id__agent_name + "</td>";
                     }
-                    clientTableDetails += "<td>" + client.checked_time + "</td>";
+                    clientTableDetails += "<td>" + client.checked_time.split('.')[0] + "</td>";
                     if (client.check_uncheck_status === false) {
                         clientTableDetails += "<td>" + "<button id='" + client.client_id + "' class='btn btn-warning check-client btn-sm'>Check</button>" + "</td>";
                     } else {
