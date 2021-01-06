@@ -1,5 +1,11 @@
 # Admin Management System
 
+# Short Demo video
+* Video1 - https://drive.google.com/file/d/1cO4pDy8hTvOaAQPl55EpABLG-2QrZyRW/view?usp=sharing
+* Video2 - https://drive.google.com/file/d/1LheBdLIBs8pvNw9igtZTvqrbsAoRmyL6/view?usp=sharing
+
+
+
 # Project functionalities :
 # Description :
 * Admin should have the following details to be displayed.
