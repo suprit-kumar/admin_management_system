@@ -312,20 +312,6 @@ function updateClientStatus() {
     })
 }
 
-function keyValidate() {
-    var e = event || window.event;  // get event object
-    var key = e.keyCode || e.which; // get key cross-browser
-
-    if (key == 9 || key == 8 || key == 46 || key == 37 || key == 39 || key == 96 || key == 97 || key == 98 || key == 99 || key == 100 || key == 101 || key == 102 || key == 103 || key == 104 || key == 105) {
-    } else {
-        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) { //if it is not a number ascii code
-            //Prevent default action, which is inserting character
-            if (e.preventDefault) e.preventDefault(); //normal browsers
-            e.returnValue = false; //IE
-        }
-    }
-}
-
 function reload() {
     setTimeout((function () {
         window.location.reload();

@@ -205,6 +205,9 @@
             </div>
             <h4 class="btn  btn-rounded btn-sm btn-black  text-center table-name-btn" style="float: left;color: white">
                 Client List</h4>
+            <a href="javascript:void(0)" class="btn btn-primary btn-rounded btn-sm"
+               onclick="exportTableToCSV('client-details.csv')" style="float: right">Export to CSV<i
+                    class="fa fa-download ml-1"></i></a>
             <table id="client_details_tab" class="table table-striped table-bordered table-sm mt-2" cellspacing="0"
                    width="100%">
                 <thead class="#2962ff blue accent-4">
@@ -232,4 +235,5 @@
 
 {% block fscripts %}
     <script type="text/javascript" src="{% static 'jsLogic/kycadmin_dashboard.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jsLogic/common.js' %}"></script>
 {% endblock %}

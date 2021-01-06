@@ -245,6 +245,9 @@
             <a href="javascript:void(0)" class="btn  btn-rounded btn-sm" data-toggle="modal" style="float: right"
                data-target="#create_update_client_modal">Add Client<i
                     class="fas fa-plus-square ml-1"></i></a>
+            <a href="javascript:void(0)" class="btn btn-black btn-rounded btn-sm"
+               onclick="exportTableToCSV('client-details.csv')" style="float: right">Export to CSV<i
+                    class="fa fa-download ml-1"></i></a>
             <table id="client_details_tab" class="table table-striped table-bordered table-sm mt-2" cellspacing="0"
                    width="100%">
                 <thead class="#2962ff blue accent-4">
@@ -339,4 +342,5 @@
 
 {% block fscripts %}
     <script type="text/javascript" src="{% static 'jsLogic/superadmin_dashboard.js' %}"></script>
+    <script type="text/javascript" src="{% static 'jsLogic/common.js' %}"></script>
 {% endblock %}
