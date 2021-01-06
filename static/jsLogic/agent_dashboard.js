@@ -73,5 +73,3 @@ function checkClientByAgent(clientId) {
         }
     })
 }
-
-
