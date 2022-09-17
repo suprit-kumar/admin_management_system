@@ -13,7 +13,7 @@ class Role(models.Model):
         db_table = "role"
 
     def __unicode__(self):
-        return u'%s' % [self.role_id]
+        return f'{[self.role_id]}'
 
 
 class KycAdmin(models.Model):
@@ -31,7 +31,7 @@ class KycAdmin(models.Model):
         db_table = "kyc_admin"
 
     def __unicode__(self):
-        return u'%s' % [self.admin_id]
+        return f'{[self.admin_id]}'
 
 
 class Agent(models.Model):
@@ -50,7 +50,7 @@ class Agent(models.Model):
         db_table = "agent"
 
     def __unicode__(self):
-        return u'%s' % [self.agent_id]
+        return f'{[self.agent_id]}'
 
 
 class Clients(models.Model):
@@ -72,7 +72,7 @@ class Clients(models.Model):
         db_table = "clients"
 
     def __unicode__(self):
-        return u'%s' % [self.client_id]
+        return f'{[self.client_id]}'
 
 
 class AuthUsers(models.Model):
@@ -89,4 +89,4 @@ class AuthUsers(models.Model):
         db_table = "authenticated_users"
 
     def __unicode__(self):
-        return u'%s' % [self.u_id]
+        return f'{[self.u_id]}'
